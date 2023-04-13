@@ -1,3 +1,14 @@
+_This requires an es384 public key in SPKI PEM format_
+which can be generated with openssl
+
+`openssl ecparam -name secp384r1 -genkey -noout -out sec1_ec_p384_private.pem && openssl ec -in sec1_ec_p384_private.pem -pubout -out sec1_ec_p384_public.pem`
+
+Use the following to convert private to pkcs8
+
+`openssl pkcs8 -topk8 -nocrypt -in sec1_ec_p384_private.pem -out ec_p384_private.pem`
+
+(https://stackoverflow.com/questions/71856396/how-to-create-private-key-for-jwt-es384)
+
 # create-svelte
 
 Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).

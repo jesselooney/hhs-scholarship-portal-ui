@@ -23,9 +23,16 @@
 		"prettier-plugin-svelte": "^2.8.1",
 		"svelte": "^3.54.0",
 		"svelte-check": "^3.0.1",
+		"svelte-search": "^2.0.1",
 		"tslib": "^2.4.1",
 		"typescript": "^4.9.3",
 		"vite": "^4.0.0"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"fp-ts": "^2.13.1",
+		"fuse.js": "^6.6.2",
+		"io-ts": "^2.2.20",
+		"jose": "^4.13.1"
+	}
 }
