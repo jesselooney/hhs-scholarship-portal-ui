@@ -34,7 +34,7 @@ export const load = (async ({ fetch, params }) => {
     // Otherwise, the data is still loading or something has gone wrong, so we don't know what the `currentApplication` is and thus it is `undefined`.
   }
 
-  // TODO do something other than just `.catch`-ing?
+  // TODO alert user if these requests fail, and have option to try again
   async function toggleCompleted(applicationId: number) {
     await fetch(buildUri(`applications/${applicationId}`), {
       method: 'PATCH',
@@ -44,9 +44,7 @@ export const load = (async ({ fetch, params }) => {
         }
       }),
       headers: { 'Content-Type': 'application/json' }
-    })
-      .then(invalidateAll)
-      .catch();
+    }).then(invalidateAll);
   }
 
   async function updateEssay(applicationId: number, newEssay: string) {
@@ -58,7 +56,7 @@ export const load = (async ({ fetch, params }) => {
         }
       }),
       headers: { 'Content-Type': 'application/json' }
-    }).catch();
+    });
   }
 
   async function createApplication(scholarshipId: number) {
@@ -68,17 +66,13 @@ export const load = (async ({ fetch, params }) => {
       headers: {
         'Content-Type': 'application/json'
       }
-    })
-      .then(invalidateAll)
-      .catch();
+    }).then(invalidateAll);
   }
 
   async function deleteApplication(applicationId: number) {
     await fetch(buildUri(`applications/${applicationId}`), {
       method: 'DELETE'
-    })
-      .then(invalidateAll)
-      .catch();
+    }).then(invalidateAll);
   }
 
   return {

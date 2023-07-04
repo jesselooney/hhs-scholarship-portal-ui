@@ -15,6 +15,11 @@
   } = data);
 
   $: essay = currentApplication?.essay ?? '';
+  let essaySaved = true;
+
+  let handleEssayChangedDebounced = debounce((e: any) => {
+    updateEssay(currentApplication?.id ?? NaN, e.target.value).then((_) => (essaySaved = true));
+  }, 500);
 </script>
 
 <section class="applications">
@@ -85,12 +90,14 @@
           name="application__essay"
           id="application__essay"
           value={essay}
-          on:input={debounce((e) => {
-            updateEssay(currentApplication?.id ?? NaN, e.target.value);
-          }, 500)}
+          on:input={(e) => {
+            essaySaved = false;
+            handleEssayChangedDebounced(e);
+          }}
           cols="30"
           rows="10"
         />
+        <span class="application__essaySavedIndicator">{essaySaved}</span>
         <button on:click={() => toggleCompleted(currentApplication?.id ?? NaN)}>
           {currentApplication.completed ? 'Mark as incomplete' : 'Mark as complete'}
         </button>
