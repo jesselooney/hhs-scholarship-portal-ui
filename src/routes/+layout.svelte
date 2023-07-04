@@ -3,4 +3,4 @@
   <a href="/biographics">My Data</a>
 </nav>
 
-<slot></slot>
+<main><slot /></main>
