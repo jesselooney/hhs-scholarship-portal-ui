@@ -1,8 +1,6 @@
 import type { PageLoad } from './$types';
 import * as t from 'io-ts';
 import fetchAndValidate from '../../../utils/fetchAndValidate';
-import { error } from '@sveltejs/kit';
-import { invalidateAll } from '$app/navigation';
 import buildUri from '../../../utils/buildUri';
 import { Application, Scholarship } from '../../../types';
 
@@ -34,55 +32,10 @@ export const load = (async ({ fetch, params }) => {
     // Otherwise, the data is still loading or something has gone wrong, so we don't know what the `currentApplication` is and thus it is `undefined`.
   }
 
-  // TODO alert user if these requests fail, and have option to try again
-  async function toggleCompleted(applicationId: number) {
-    await fetch(buildUri(`applications/${applicationId}`), {
-      method: 'PATCH',
-      body: JSON.stringify({
-        data: {
-          completed: !currentApplication?.completed
-        }
-      }),
-      headers: { 'Content-Type': 'application/json' }
-    }).then(invalidateAll);
-  }
-
-  async function updateEssay(applicationId: number, newEssay: string) {
-    await fetch(buildUri(`applications/${applicationId}`), {
-      method: 'PATCH',
-      body: JSON.stringify({
-        data: {
-          essay: newEssay
-        }
-      }),
-      headers: { 'Content-Type': 'application/json' }
-    });
-  }
-
-  async function createApplication(scholarshipId: number) {
-    await fetch(buildUri('applications'), {
-      method: 'POST',
-      body: JSON.stringify({ data: { scholarshipId } }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).then(invalidateAll);
-  }
-
-  async function deleteApplication(applicationId: number) {
-    await fetch(buildUri(`applications/${applicationId}`), {
-      method: 'DELETE'
-    }).then(invalidateAll);
-  }
-
   return {
     completeApplications,
     incompleteApplications,
     currentApplication,
-    currentScholarship,
-    toggleCompleted,
-    updateEssay,
-    createApplication,
-    deleteApplication
+    currentScholarship
   };
 }) satisfies PageLoad;

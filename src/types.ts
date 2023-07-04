@@ -25,3 +25,11 @@ export const Application = t.type({
   })
 });
 export type Application = t.TypeOf<typeof Application>;
+
+export type SnackbarState = {
+  message: string;
+  action?: {
+    title: string;
+    callback: (_: unknown) => unknown;
+  };
+};

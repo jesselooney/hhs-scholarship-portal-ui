@@ -2,23 +2,99 @@
   export let data;
 
   import debounce from 'just-debounce-it';
+  import buildUri from '../../../utils/buildUri.js';
+  import { invalidateAll } from '$app/navigation';
+  import { snackbarState } from '../../../stores.js';
 
-  $: ({
-    incompleteApplications,
-    completeApplications,
-    currentApplication,
-    currentScholarship,
-    toggleCompleted,
-    updateEssay,
-    createApplication,
-    deleteApplication
-  } = data);
+  const UPDATE_FAILED_ERROR_MESSAGE =
+    'Your application could not be updated due to an unexpected error.';
+
+  $: ({ incompleteApplications, completeApplications, currentApplication, currentScholarship } =
+    data);
 
   $: essay = currentApplication?.essay ?? '';
   let essaySaved = true;
 
+  // TODO Add retry for toggle, create, and delete
+  async function toggleCompleted(applicationId: number) {
+    try {
+      await fetch(buildUri(`applications/${applicationId}`), {
+        method: 'PATCH',
+        body: JSON.stringify({
+          data: {
+            completed: !currentApplication?.completed
+          }
+        }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+      invalidateAll();
+    } catch (e) {
+      snackbarState.set({
+        message: UPDATE_FAILED_ERROR_MESSAGE
+      });
+      throw e;
+    }
+  }
+
+  async function updateEssay(applicationId: number, newEssay: string) {
+    try {
+      await fetch(buildUri(`applications/${applicationId}`), {
+        method: 'PATCH',
+        body: JSON.stringify({
+          data: {
+            essay: newEssay
+          }
+        }),
+        headers: { 'Content-Type': 'application/json' }
+      });
+      essaySaved = true;
+    } catch (e) {
+      snackbarState.set({
+        message: UPDATE_FAILED_ERROR_MESSAGE,
+        action: {
+          title: 'Retry',
+          callback: (_) =>
+            updateEssay(applicationId, newEssay).then((_) => snackbarState.set(undefined))
+        }
+      });
+      throw e;
+    }
+  }
+
+  async function createApplication(scholarshipId: number) {
+    try {
+      await fetch(buildUri('applications'), {
+        method: 'POST',
+        body: JSON.stringify({ data: { scholarshipId } }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      invalidateAll();
+    } catch (e) {
+      snackbarState.set({
+        message: UPDATE_FAILED_ERROR_MESSAGE
+      });
+      throw e;
+    }
+  }
+
+  async function deleteApplication(applicationId: number) {
+    try {
+      await fetch(buildUri(`applications/${applicationId}`), {
+        method: 'DELETE'
+      });
+      invalidateAll();
+    } catch (e) {
+      snackbarState.set({
+        message: UPDATE_FAILED_ERROR_MESSAGE
+      });
+      throw e;
+    }
+  }
+
   let handleEssayChangedDebounced = debounce((e: any) => {
-    updateEssay(currentApplication?.id ?? NaN, e.target.value).then((_) => (essaySaved = true));
+    updateEssay(currentApplication?.id ?? NaN, e.target.value);
   }, 500);
 </script>
 
