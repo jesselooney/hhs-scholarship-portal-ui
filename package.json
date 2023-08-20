@@ -34,6 +34,7 @@
 		"fuse.js": "^6.6.2",
 		"io-ts": "^2.2.20",
 		"jose": "^4.13.1",
-		"just-debounce-it": "^3.2.0"
+		"just-debounce-it": "^3.2.0",
+		"svelte-multiselect": "^10.0.0"
 	}
 }
