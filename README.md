@@ -1,6 +1,8 @@
 _This requires an es384 public key in SPKI PEM format_
 which can be generated with openssl
 
+make sure the whole key is on one line in the environment variable
+
 `openssl ecparam -name secp384r1 -genkey -noout -out sec1_ec_p384_private.pem && openssl ec -in sec1_ec_p384_private.pem -pubout -out sec1_ec_p384_public.pem`
 
 Use the following to convert private to pkcs8
